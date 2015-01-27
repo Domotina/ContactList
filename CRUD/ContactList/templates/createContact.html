@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block titulo %} Create Contact {% endblock titulo %}
+
+{% block contenido %}
+<form method="post"> {% csrf_token %}
+    {{ form.as_ul }}
+    <input type="submit" name="submit" class = "btn btn-primary" value="Crear Contacto">
+</form>
+{% endblock contenido%}

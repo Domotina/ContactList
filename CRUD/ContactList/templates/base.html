@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>{% block titulo %}{% endblock titulo %}</title>
+    <link rel="stylesheet" href="http://bootswatch.com/slate/bootstrap.min.css">
+</head>
+<body style="padding-top: 50px;" >
+    <div class="container">
+        <div class="well">
+            <img src="http://spacepetroenergy.com/image/addressbook.png">
+            <!--https://www.google.com/fonts#QuickUsePlace:quickUse  Gloria Hallelujah-->
+            <h3 style="text-align: center; font-face{src: url(https://www.google.com/fonts#QuickUsePlace:quickUse/Family:Gloria+Hallelujah)};"> CONTACT LIST APP </h3>
+            {% block contenido %}{% endblock contenido %}
+        </div>
+    </div>
+</body>
+</html>
