@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block details %}
+<div class="container">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Data
+                </h3>
+            </div>
+            <table class="table">
+                <thead>
+                    <th>Name</th>
+                    <th>Company</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>A</td>
+                        <td>B</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% for location in contact.location_set %}
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    Location: {{location.name_location}}
+                </h3>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            Addresses
+                        </h3>
+                    </div>
+                    <ul class="list-group">
+                        {% for address in location.address_set %}
+                        <li class="list-group-item">{{ address.address }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            Emails
+                        </h3>
+                    </div>
+                    <ul class="list-group">
+                        {% for email in location.email_set %}
+                        <li class="list-group-item">{{ email.email }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            Phones
+                        </h3>
+                    </div>
+                    <ul class="list-group">
+                        {% for phone in location.phone_set %}
+                        <li class="list-group-item">{{ phone.number }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% block details %}
