@@ -1,6 +1,6 @@
 from django import forms
 from ContactList.models import Address, Company, Contact, Email, List, Location, Phone
-
+#Dev
 class AddressForm(forms.ModelForm):
     class Meta:
         model = Address
