@@ -4,13 +4,30 @@
     <meta charset="UTF-8">
     <title>{% block titulo %}{% endblock titulo %}</title>
     <link rel="stylesheet" href="http://bootswatch.com/slate/bootstrap.min.css">
+    <link href='http://fonts.googleapis.com/css?family=Gloria+Hallelujah' rel='stylesheet' type='text/css'>
+    <style>
+        .title{
+            display: inline-block;
+            vertical-align: top;
+            margin-top: 44px;
+            font-family: 'Gloria Hallelujah';
+        }
+        .image{
+            display: inline-block;
+            vertical-align: top;
+        }
+        .space{
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body style="padding-top: 50px;" >
     <div class="container">
         <div class="well">
-            <img src="http://spacepetroenergy.com/image/addressbook.png">
+            <img class="image" src="http://spacepetroenergy.com/image/addressbook.png" width = "120px" height = "130px">
             <!--https://www.google.com/fonts#QuickUsePlace:quickUse  Gloria Hallelujah-->
-            <h3 style="text-align: center; font-face{src: url(https://www.google.com/fonts#QuickUsePlace:quickUse/Family:Gloria+Hallelujah)};"> CONTACT LIST APP </h3>
+            <h3 class="title"> CONTACT LIST APP </h3>
+            <div class="space"></div>
             {% block contenido %}{% endblock contenido %}
         </div>
     </div>
