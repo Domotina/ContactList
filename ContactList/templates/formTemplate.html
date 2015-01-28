@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block titulo %} {{ entity }} CRUD {% endblock titulo %}
+
+{% block contenido %}
+{% load widget_tweaks %}
+<div class="container">
+    <div class="col-md-2">
+        {% include "menuTemplate.html" %}
+    </div>
+    <div class="col-md-10">
+        <h1>{{ entity }}</h1>
+        <form method="post" action="">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                {{ field.errors }}
+                {{ field.label_tag }} {{ field|add_class:"form-control" }}
+            </div>
+            {% endfor %}
+            <input type="submit" class="btn btn-primary" value="Send"/>
+            <input type="reset" class="btn btn-default" value="Reset"/>
+        </form>
+    </div>
+</div>
+{% endblock contenido%}
