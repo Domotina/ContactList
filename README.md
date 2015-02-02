@@ -1,2 +1,2 @@
 # ContactList
-Repositorio para tarea 1 de Lista de contactos
+Repositorio para tarea 2 de Agenda de contactos por usuario

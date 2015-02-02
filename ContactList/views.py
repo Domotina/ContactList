@@ -1,91 +1,64 @@
-from django.shortcuts import HttpResponseRedirect, render_to_response, render
-from django.template import RequestContext
-from ContactList.models import Contact
-from ContactList.forms import CompanyForm, ListForm, ContactForm, LocationForm, AddressForm, EmailForm, PhoneForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.core.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404, redirect, render
 
-# Create your views here.
+from .forms import AgendaForm, ContactoForm
+from .models import Agenda, Contacto
 
+def agenda_list(request):
+    agendas = Agenda.public.all()
+    context = {'agendas': agendas}
+    return render(request, 'agenda_list.html', context)
 
-def index(request):
-    contacts = Contact.objects.all().order_by('name_contact')
-    return render_to_response('index.html', {"contacts": contacts}, context_instance=RequestContext(request))
+def contact_list(request, agendaId):
+    agenda = get_object_or_404(Agenda, id = agendaId)
+    contactos = agenda.contactos.all()
+    context = {'contactos': contactos, 'agendaId': agendaId}
+    return render(request, 'contact_list.html', context)
 
-def create(request):
-    return render_to_response("homeViewTemplate.html", locals(), context_instance=RequestContext(request))
+def agenda_user(request, username):
+    user = get_object_or_404(User, username = username)
+    if request.user == user:
+        agendas = user.agendas.all()
+    else:
+        agendas = Agenda.public.filter(propietario__username = username)
+    context = {'agendas': agendas, 'propietario': user}
+    return render(request, 'agenda_user.html', context)
 
-def CompanyView(request):
+@login_required
+def agenda_create(request):
+    if request.method == 'POST':
+        form = AgendaForm(data = request.POST)
+        if form.is_valid():
+            form.save(propietario = request.user)
+            return redirect('contacts_agenda_user', username = request.user.username)
+    else:
+        form = AgendaForm()
+    return render(request, 'form.html', {'form': form, 'create': True})
 
-    form = CompanyForm(request.POST or None)
-    entity = "Company"
+@login_required
+def contact_create(request, agendaId):
+    if request.method == 'POST':
+        form = ContactoForm(data = request.POST)
+        if form.is_valid():
+            form.save()
+            print(agendaId)
+            return redirect('contacts_contact_list', agendaId = agendaId)
+    else:
+        form = ContactoForm()
+    return render(request, 'form.html', {'form': form, 'create': True})
 
-    if form.is_valid():
-        save_it = form.save(commit=False)
-        save_it.save()
-
-    return render_to_response("formTemplate.html", locals(), context_instance=RequestContext(request))
-
-def ListView(request):
-
-    form = ListForm(request.POST or None)
-    entity = "List"
-
-    if form.is_valid():
-        save_it = form.save(commit=False)
-        save_it.save()
-
-    return render_to_response("formTemplate.html", locals(), context_instance=RequestContext(request))
-
-def ContactView(request):
-
-    form = ContactForm(request.POST or None)
-    entity = "Contact"
-
-    if form.is_valid():
-        save_it = form.save(commit=False)
-        save_it.save()
-
-    return render_to_response("formTemplate.html", locals(), context_instance=RequestContext(request))
-
-def LocationView(request):
-
-    form = LocationForm(request.POST or None)
-    entity = "Location"
-
-    if form.is_valid():
-        save_it = form.save(commit=False)
-        save_it.save()
-
-    return render_to_response("formTemplate.html", locals(), context_instance=RequestContext(request))
-
-def AddressView(request):
-
-    form = AddressForm(request.POST or None)
-    entity = "Address"
-
-    if form.is_valid():
-        save_it = form.save(commit=False)
-        save_it.save()
-
-    return render_to_response("formTemplate.html", locals(), context_instance=RequestContext(request))
-
-def EmailView(request):
-
-    form = EmailForm(request.POST or None)
-    entity = "Email"
-
-    if form.is_valid():
-        save_it = form.save(commit=False)
-        save_it.save()
-
-    return render_to_response("formTemplate.html", locals(), context_instance=RequestContext(request))
-
-def PhoneView(request):
-
-    form = PhoneForm(request.POST or None)
-    entity = "Phone"
-
-    if form.is_valid():
-        save_it = form.save(commit=False)
-        save_it.save()
-
-    return render_to_response("formTemplate.html", locals(), context_instance=RequestContext(request))
+@login_required
+def agenda_edit(request, pk):
+    agenda = get_object_or_404(Agenda, pk = pk)
+    if agenda.propietario != request.user and not request.user.is_superuser:
+        raise PermissionDenied
+    if request.method == 'POST':
+        form = AgendaForm(instance = agenda, data = request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('contacts_agenda_user', username = request.user.username)
+    else:
+        form = AgendaForm(instance = agenda)
+    return render(request, 'form.html', {'form': form, 'create': False, 'agenda': agenda})

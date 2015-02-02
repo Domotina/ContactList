@@ -1,33 +1,21 @@
-from django import forms
-from ContactList.models import Address, Company, Contact, Email, List, Location, Phone
+from django.forms import ModelForm
 
-class AddressForm(forms.ModelForm):
-    class Meta:
-        model = Address
+from .models import Agenda, Contacto
 
-class CompanyForm(forms.ModelForm):
-    class Meta:
-        model = Company
 
-class ContactForm(forms.ModelForm):
+class AgendaForm(ModelForm):
     class Meta:
-        model = Contact
+        model = Agenda
+        exclude = ('fecha_creacion', 'fecha_modificacion', 'propietario', 'contactos')
 
-class EmailForm(forms.ModelForm):
-    class Meta:
-        model = Email
+    def save(self, commit = True, propietario = None):
+        if not self.instance.pk:
+            if not propietario:
+                raise TypeError("Propietario is required to create an Agenda.")
+            self.instance.propietario = propietario
+        return super(AgendaForm, self).save(commit)
 
-class ListForm(forms.ModelForm):
+class ContactoForm(ModelForm):
     class Meta:
-        model = List
-        widgets = {
-            'password': forms.PasswordInput(),
-        }
-
-class LocationForm(forms.ModelForm):
-    class Meta:
-        model = Location
-
-class PhoneForm(forms.ModelForm):
-    class Meta:
-        model = Phone
+        model = Contacto
+        fields = ['nombres', 'apellidos', 'empresa']
