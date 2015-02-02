@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Latest contacts{% endblock %}
+
+{% block heading %}
+<h2>Latest contacts</h2>
+{% endblock %}
+
+{% block content %}
+<ul class="list-unstyled">
+{% for contact in contactos %}
+    <li class="well">{% include "contact.html" %}</li>
+{% empty %}
+    <li>No contacts. :(</li>
+{% endfor %}
+</ul>
+{% if user.is_authenticated %}
+<p><a class="btn btn-default" href='{% url "contacts_contact_create" agendaId %}'>
+    Create new contact</a></p>
+{% endif %}
+{% endblock %}

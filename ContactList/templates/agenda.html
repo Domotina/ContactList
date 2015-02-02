@@ -1,0 +1,13 @@
+{% load static %}
+{{ agenda.nombre }} by <a href='{% url "contacts_agenda_user" agenda.propietario.username %}'>
+    {{ agenda.propietario.username }}</a>
+{{ agenda.fecha_creacion|timesince }} ago
+
+{% if agenda.propietario == user %}
+<br/><a title="Edit agenda" href='{% url "contacts_agenda_edit" agenda.pk %}'>
+    <img src='{% static "img/pencil.png" %}' border="0"/>
+</a>
+<a title="View contacts" href='{% url "contacts_contact_list" agenda.pk %}'>
+    <img src='{% static "img/persons.png" %}' border="0"/>
+</a>
+{% endif %}

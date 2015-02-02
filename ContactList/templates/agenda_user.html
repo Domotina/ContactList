@@ -1,0 +1,9 @@
+{% extends "agenda_list.html" %}
+
+{% block title %}{{ propietario.username }}'s agendas{% endblock %}
+
+{% block heading %}
+<h2>{{ propietario.username }}'s agendas<br>
+    <small>{{ agendas.count }} agendas in total</small>
+</h2>
+{% endblock %}

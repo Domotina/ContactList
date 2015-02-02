@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Latest agendas{% endblock %}
+
+{% block heading %}
+<h2>Latest agendas</h2>
+{% endblock %}
+
+{% block content %}
+<ul class="list-unstyled">
+{% for agenda in agendas %}
+    <li class="well">{% include "agenda.html" %}</li>
+{% empty %}
+    <li>No agendas. :(</li>
+{% endfor %}
+</ul>
+{% if user.is_authenticated %}
+<p><a class="btn btn-default" href='{% url "contacts_agenda_create" %}'>
+    Create new agenda</a></p>
+{% endif %}
+{% endblock %}

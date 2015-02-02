@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% if create %}Create{% else %}Edit{% endif %} agenda{% endblock %}
+
+{% block heading %}
+<h2>{% if create %}Create agenda{% else %}Edit agenda{% endif %}</h2>
+{% endblock %}
+
+{% block content %}
+{% if create %}
+{% url "contacts_agenda_create" as action_url %}
+{% else %}
+{% url "contacts_agenda_edit" agenda.pk as action_url %}
+{% endif %}
+<form action="{{ action_url }}" method="post" accept-charset="utf-8">
+    {{ form|crispy }}
+    {% csrf_token %}
+    <p><input type="submit" class="btn btn-default" value="Save" /></p>
+</form>
+{% endblock %}
