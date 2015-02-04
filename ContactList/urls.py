@@ -14,6 +14,8 @@ urlpatterns = patterns('ContactList.views',
     url(r'^createCompany/$', 'app_create_company', name='app_create_company'),
     url(r'^create_NewCompany/create_contact.html$', 'CompanyView', name='CompanyView'),
     url(r'^create_NewContact/listContact.html$', 'app_contact_list_create_contact', name='app_contact_list_create_contact'),
+    url(r'^search/$', 'SearchContact', name='SearchContact'),
+    url(r'^search/$', 'search', name='search'),
 
     #url(r'^agenda/(?P<agendaId>[-\w]+)/contacts/$', 'contact_list', name='contacts_contact_list'),
     #url(r'^agenda/(?P<agendaId>[-\w]+)/contacts/create$', 'contact_create', name='contacts_contact_create'),

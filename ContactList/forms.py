@@ -1,4 +1,5 @@
 from django.forms import ModelForm
+from django import forms
 
 from .models import ContactList, Contact, Company
 
@@ -30,3 +31,7 @@ class ContactForm(ModelForm):
 class CompanyForm(ModelForm):
     class Meta:
         model = Company
+
+class SearchForm(ModelForm):
+    name = forms.CharField(label='Name', max_length=100)
+    last_name = forms.CharField(label='Last Name', max_length=100)
