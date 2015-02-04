@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="container">
+    <div class="col-md-10">
+        <div class="navbar navbar-default">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse"
+                        data-target=".navbar-responsive-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Create Location</a>
+            </div>
+            <div class="navbar-collapse collapse navbar-responsive-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/createLocation">Create</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <form method="post" action="">
+            {% csrf_token %}
+            {{ form|crispy }}
+
+            <input type="submit" class="btn btn-primary" value="Create Location"/>
+            <input type="reset" class="btn btn-default" value="Reset"/>
+            <input type="reset" class="btn btn-default" value="Return"/>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        var contact_company=$('#id_contact_company');
+        var addButton = $('<button class="btn btn-default">');
+        addButton.append($('<span class="glyphicon glyphicon-plus">'));
+        contact_company.css({'width':'90%', 'display':'inline'});
+        addButton.css({'display':'inline', 'margin-left':'1%'});
+        addButton.insertAfter(contact_company);
+
+        addButton.on('click', function(){
+            $('.modal').show();
+        });
+
+        $('#create_company')
+    });
+
+</script>
+{% endblock content %}

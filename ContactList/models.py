@@ -51,6 +51,9 @@ class Contact(models.Model):
     first_name = models.CharField('first_name',max_length=50)
     second_name = models.CharField('second_name',max_length=50)
     last_name = models.CharField('last_name',max_length=50)
+    #facebook = models.CharField('last_name',max_length=100)
+    #google = models.CharField('last_name',max_length=100)
+    #twitter = models.CharField('last_name',max_length=100)
     contact_company = models.ForeignKey(Company,blank=True,null=True)
     contact_list = models.ForeignKey(ContactList)
 
