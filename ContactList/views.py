@@ -3,62 +3,62 @@ from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import AgendaForm, ContactoForm
-from .models import Agenda, Contacto
+from .forms import ContactListForm
+from .models import ContactList
 
-def agenda_list(request):
-    agendas = Agenda.public.all()
-    context = {'agendas': agendas}
-    return render(request, 'agenda_list.html', context)
+def contact_lists(request):
+    contact_lists = ContactList.public.all()
+    context = {'contact_lists': contact_lists}
+    return render(request, 'contact_lists.html', context)
 
-def contact_list(request, agendaId):
-    agenda = get_object_or_404(Agenda, id = agendaId)
-    contactos = agenda.contactos.all()
-    context = {'contactos': contactos, 'agendaId': agendaId}
-    return render(request, 'contact_list.html', context)
-
-def agenda_user(request, username):
+def contact_list_user(request, username):
     user = get_object_or_404(User, username = username)
     if request.user == user:
-        agendas = user.agendas.all()
+        contact_lists = user.contact_lists.all()
     else:
-        agendas = Agenda.public.filter(propietario__username = username)
-    context = {'agendas': agendas, 'propietario': user}
-    return render(request, 'agenda_user.html', context)
+        contact_lists = ContactList.public.filter(owner_list__username = username)
+    context = {'contact_lists': contact_lists, 'owner_list': user}
+    return render(request, 'contact_list_user.html', context)
 
 @login_required
-def agenda_create(request):
+def contact_list_create(request):
     if request.method == 'POST':
-        form = AgendaForm(data = request.POST)
+        form = ContactListForm(data = request.POST)
         if form.is_valid():
-            form.save(propietario = request.user)
-            return redirect('contacts_agenda_user', username = request.user.username)
+            form.save(owner_list = request.user)
+            return redirect('app_contact_list_user', username = request.user.username)
     else:
-        form = AgendaForm()
+        form = ContactListForm()
     return render(request, 'form.html', {'form': form, 'create': True})
 
 @login_required
-def contact_create(request, agendaId):
-    if request.method == 'POST':
-        form = ContactoForm(data = request.POST)
-        if form.is_valid():
-            form.save()
-            print(agendaId)
-            return redirect('contacts_contact_list', agendaId = agendaId)
-    else:
-        form = ContactoForm()
-    return render(request, 'form.html', {'form': form, 'create': True})
-
-@login_required
-def agenda_edit(request, pk):
-    agenda = get_object_or_404(Agenda, pk = pk)
-    if agenda.propietario != request.user and not request.user.is_superuser:
+def contact_list_edit(request, pk):
+    contact_list = get_object_or_404(ContactList, pk = pk)
+    if contact_list.owner_list != request.user and not request.user.is_superuser:
         raise PermissionDenied
     if request.method == 'POST':
-        form = AgendaForm(instance = agenda, data = request.POST)
+        form = ContactListForm(instance = contact_list, data = request.POST)
         if form.is_valid():
             form.save()
-            return redirect('contacts_agenda_user', username = request.user.username)
+            return redirect('app_contact_list_user', username = request.user.username)
     else:
-        form = AgendaForm(instance = agenda)
-    return render(request, 'form.html', {'form': form, 'create': False, 'agenda': agenda})
+        form = ContactListForm(instance = contact_list)
+    return render(request, 'form.html', {'form': form, 'create': False, 'contact_list': contact_list})
+
+#def contact_list(request, agendaId):
+#    agenda = get_object_or_404(Agenda, id = agendaId)
+#    contactos = agenda.contactos.all()
+#    context = {'contactos': contactos, 'agendaId': agendaId}
+#    return render(request, 'contact_list.html', context)
+
+#@login_required
+#def contact_create(request, agendaId):
+#    if request.method == 'POST':
+#        form = ContactoForm(data = request.POST)
+#        if form.is_valid():
+#            form.save()
+#            print(agendaId)
+#            return redirect('contacts_contact_list', agendaId = agendaId)
+#    else:
+#        form = ContactoForm()
+#    return render(request, 'form.html', {'form': form, 'create': True})

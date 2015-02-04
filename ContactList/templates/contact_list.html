@@ -1,21 +1,28 @@
-{% extends "base.html" %}
+{% load static %}
 
-{% block title %}Latest contacts{% endblock %}
+<ul class="nav navbar-collapse collapse">
+    <li class="dropdown">
+        {{ contact_list.name_list }}
+        <a class="dropdown-toggle" id="dropuser" data-toggle="dropdown" href="#">
+            {% if contact_list.is_public %}
+                <img src='{% static "img/public_agenda.png" %}' border="0"/>
+            {% else %}
+                <img src='{% static "img/private_agenda.png" %}' border="0"/>
+            {% endif %}
+            <b class="caret"></b>
+        </a>
 
-{% block heading %}
-<h2>Latest contacts</h2>
-{% endblock %}
-
-{% block content %}
-<ul class="list-unstyled">
-{% for contact in contactos %}
-    <li class="well">{% include "contact.html" %}</li>
-{% empty %}
-    <li>No contacts. :(</li>
-{% endfor %}
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropuser">
+            {% if contact_list.owner_list == user %}
+                <li><a href='{% url "app_contact_list_edit" contact_list.pk %}'>Edit</a></li>
+            {% endif %}
+            <li>
+                <a href='{% url "app_contact_list_user" contact_list.owner_list.username %}'>
+                View all created by {{ contact_list.owner_list.username }}</a>
+            </li>
+            {% if user.is_authenticated %}
+                <li><a href='{% url "app_contact_list_user" user.username %}'>View contacts</a></li>
+            {% endif %}
+        </ul>
+    </li>
 </ul>
-{% if user.is_authenticated %}
-<p><a class="btn btn-default" href='{% url "contacts_contact_create" agendaId %}'>
-    Create new contact</a></p>
-{% endif %}
-{% endblock %}

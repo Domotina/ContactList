@@ -1,21 +1,15 @@
 from django.forms import ModelForm
 
-from .models import Agenda, Contacto
+from .models import ContactList
 
-
-class AgendaForm(ModelForm):
+class ContactListForm(ModelForm):
     class Meta:
-        model = Agenda
-        exclude = ('fecha_creacion', 'fecha_modificacion', 'propietario', 'contactos')
+        model = ContactList
+        exclude = ('owner_list',)
 
-    def save(self, commit = True, propietario = None):
+    def save(self, commit = True, owner_list = None):
         if not self.instance.pk:
-            if not propietario:
-                raise TypeError("Propietario is required to create an Agenda.")
-            self.instance.propietario = propietario
-        return super(AgendaForm, self).save(commit)
-
-class ContactoForm(ModelForm):
-    class Meta:
-        model = Contacto
-        fields = ['nombres', 'apellidos', 'empresa']
+            if not owner_list:
+                raise TypeError("Owner is required to create a Contact List.")
+            self.instance.owner_list = owner_list
+        return super(ContactListForm, self).save(commit)

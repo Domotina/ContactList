@@ -7,7 +7,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Agenda - {% block title %}{% endblock %}</title>
+        <title>Contact Lists - {% block title %}{% endblock %}</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -36,7 +36,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Contacts Agenda</a>
+          <a class="navbar-brand" href='{% url "home" %}'>Contacts Lists</a>
         </div>
         {% block toggle_login %}
             {% include "toggle_login.html" %}
@@ -55,7 +55,7 @@
       <hr>
 
       <footer>
-        <p>&copy; UniAndes 2014</p>
+        <p>&copy; Universidad de los Andes - 2014</p>
       </footer>
     </div> <!-- /container -->        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="{% static "js/vendor/jquery-1.11.1.min.js" %}"><\/script>')</script>

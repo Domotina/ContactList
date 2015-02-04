@@ -10,10 +10,10 @@
 {% endblock %}
 
 {% block content %}
-<form action='{% url "registration_register" %}' method="post" accept-charset="utf-8">
+<form action='?next={{ next|default:"/" }}' method="post" accept-charset="utf-8">
     {{ form|crispy }}
     {% csrf_token %}
     <input type="hidden" name="next" value="{{ next }}" />
-    <input class="btn btn-default" type="submit" value="Login" />
+    <input class="btn btn-default" type="submit" value="Sign in" />
 </form>
 {% endblock %}
