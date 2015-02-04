@@ -66,7 +66,7 @@ def app_create_contact(request, pk):
 
 def app_contact_list_create_contact(request):
     if request.method == 'POST':
-        form = ContactForm(data=request.POST, instance=)
+        form = ContactForm(data=request.POST)
         if form.is_valid():
             save_it = form.save(commit=True)
             save_it.save()
