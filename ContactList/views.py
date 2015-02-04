@@ -5,8 +5,8 @@ from django.shortcuts import get_object_or_404, redirect, render, render_to_resp
 from django.template import RequestContext
 from django.db.models import Q
 
-from .forms import ContactListForm, ContactForm, CompanyForm, SearchForm
-from .models import ContactList, Contact
+from .forms import ContactListForm, ContactForm, CompanyForm, SearchForm, LocationDataForm, LocationForm
+from .models import ContactList, Contact, Location, LocationData
 
 
 def contact_lists(request):
@@ -72,7 +72,7 @@ def app_contact_list_create_contact(request):
         if form.is_valid():
             save_it = form.save(commit=True)
             save_it.save()
-            return redirect('../viewContacts/')
+            return redirect('../viewContacts/' + str(form.instance.contact_list.id))
     else:
         form = ContactForm()
     return render(request, 'create_contact.html', {'form': form, 'create': True})
@@ -94,6 +94,28 @@ def CompanyView(request):
         form = CompanyForm()
     return render(request, 'create_contact.html', {'form': form, 'create': True})
 
+
+def create_location(request):
+    if request.method == 'POST':
+        form = LocationForm(data=request.POST)
+        if form.is_valid():
+            save_it = form.save(commit=True)
+            save_it.save()
+            return render_to_response('create_location_data.html', locals(), context_instance=RequestContext(request))
+    else:
+        form = LocationForm()
+    return render(request, 'create_location.html', {'form': form, 'create': True})
+
+def create_location_data(request):
+    if request.method == 'POST':
+        form = LocationDataForm(data=request.POST)
+        if form.is_valid():
+            save_it = form.save(commit=True)
+            save_it.save()
+            return redirect('../viewContacts/' + str(form.instance.contact_list.id))
+    else:
+        form = LocationDataForm()
+    return render(request, 'create_location_data.html', {'form': form, 'create': True})
 
 def SearchContact(request):
     return render_to_response('search_contact.html', locals(), context_instance=RequestContext(request))
@@ -118,7 +140,7 @@ def search(request):
     # def contact_list(request, agendaId):
     # agenda = get_object_or_404(Agenda, id = agendaId)
     # contactos = agenda.contactos.all()
-    #    context = {'contactos': contactos, 'agendaId': agendaId}
+    # context = {'contactos': contactos, 'agendaId': agendaId}
     #    return render(request, 'contact_list.html', context)
 
     #@login_required

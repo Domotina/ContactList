@@ -51,9 +51,9 @@ class Contact(models.Model):
     first_name = models.CharField('first_name',max_length=50)
     second_name = models.CharField('second_name',max_length=50)
     last_name = models.CharField('last_name',max_length=50)
-    #facebook = models.CharField('last_name',max_length=100)
-    #google = models.CharField('last_name',max_length=100)
-    #twitter = models.CharField('last_name',max_length=100)
+    facebook = models.CharField('Facebook',max_length=100)
+    google = models.CharField('Google+',max_length=100)
+    twitter = models.CharField('Twitter',max_length=100)
     contact_company = models.ForeignKey(Company,blank=True,null=True)
     contact_list = models.ForeignKey(ContactList)
 
@@ -65,9 +65,19 @@ class Contact(models.Model):
     def __unicode__(self):
         return '%s' % self.last_name+' '+self.first_name+' '+self.second_name
 
+class LocationData(models.Model):
+
+    location_data = models.CharField('type',max_length=255)
+
+    def __unicode__(self):
+        return '%s' % self.location_data
+
 
 class Location(models.Model):
-    location = models.CharField('location',max_length=255)
+    informacion = models.CharField('contact information',max_length=255)
+    tipo = models.ForeignKey(TypeData)
+    location = models.ForeignKey(LocationData)
+
     owner_contact = models.ForeignKey(Contact)
 
     class Meta:
@@ -78,15 +88,3 @@ class Location(models.Model):
     def __unicode__(self):
         return '%s' % self.location
 
-class LocationData(models.Model):
-
-    location_data = models.CharField('type',max_length=255)
-    location_reference = models.ForeignKey(Location)
-    type_data = models.ForeignKey(TypeData)
-
-    class Meta:
-        verbose_name = 'location_data'
-        verbose_name_plural = 'locations_data'
-
-    def __unicode__(self):
-        return '%s' % self.type_data+': '+self.location_data

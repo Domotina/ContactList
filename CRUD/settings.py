@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'widget_tweaks',
     'crispy_forms',
+    'registration',
     'ContactList',
 )
 
@@ -49,7 +50,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+    #'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -63,6 +64,7 @@ WSGI_APPLICATION = 'CRUD.wsgi.application'
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
 DATABASES = {}
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
@@ -95,6 +97,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 LOGIN_URL = 'agenda_login'
 LOGOUT_URL = 'agenda_logout'
+SITE_ID = 1
 LOGIN_REDIRECT_URL = '/'
 
 # Parse database configuration from $DATABASE_URL
