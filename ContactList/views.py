@@ -10,7 +10,10 @@ from .models import ContactList, Contact, Location, LocationData
 
 
 def contact_lists(request):
+    if request.user.is_authenticated:
+        contact_lists = ContactList.objects.all()
     contact_lists = ContactList.public.all()
+
     context = {'contact_lists': contact_lists}
     return render(request, 'contact_lists.html', context)
 
@@ -34,7 +37,7 @@ def contact_list_create(request):
             return redirect('app_contact_list_user', username=request.user.username)
     else:
         form = ContactListForm()
-    return render(request, 'form.html', {'form': form, 'create': True})
+    return render(request, 'form.html', {'form': form, 'create': True, 'object': 'contact list'})
 
 
 @login_required
@@ -49,13 +52,90 @@ def contact_list_edit(request, pk):
             return redirect('app_contact_list_user', username=request.user.username)
     else:
         form = ContactListForm(instance=contact_list)
-    return render(request, 'form.html', {'form': form, 'create': False, 'contact_list': contact_list})
+    return render(request, 'form.html', {'form': form, 'create': False, 'object': 'contact list', 'contact_list': contact_list})
+
+
+@login_required
+def contacts(request, contactListId):
+    contactList = get_object_or_404(ContactList, id = contactListId)
+    contacts = Contact.objects.filter(contact_list = contactList)
+    context = {'contacts': contacts, 'contactListId': contactListId, 'contactList': contactList}
+    return render(request, 'contacts.html', context)
+
+
+@login_required
+def contact_create(request, contactListId):
+    contactList = get_object_or_404(ContactList, id = contactListId)
+    if request.method == 'POST':
+        form = ContactForm(data = request.POST)
+        if form.is_valid():
+            form.save(contact_list=contactList)
+            return redirect('app_contacts', contactListId = contactListId)
+    else:
+        form = ContactForm()
+    return render(request, 'form.html', {'form': form, 'create': True, 'object': 'contact'})
+
+
+@login_required
+def contact_edit(request, pk):
+    contact = get_object_or_404(Contact, pk=pk)
+    if contact.contact_list.owner_list != request.user and not request.user.is_superuser:
+        raise PermissionDenied
+    if request.method == 'POST':
+        form = ContactForm(instance=contact, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('app_contacts', contactListId = contact.contact_list.id)
+    else:
+        form = ContactForm(instance=contact)
+    return render(request, 'form.html', {'form': form, 'create': False, 'object': 'contact', 'contact': contact})
+
+
+@login_required
+def locations(request, contactId):
+    contact = get_object_or_404(Contact, id = contactId)
+    print contact
+    locations = Location.objects.filter(owner_contact = contact)
+    print locations
+    context = {'locations': locations, 'contactId': contactId, 'contact': contact}
+    return render(request, 'locations.html', context)
+
+
+@login_required
+def location_create(request, contactId):
+    contact = get_object_or_404(Contact, id = contactId)
+    if request.method == 'POST':
+        form = LocationForm(data = request.POST)
+        if form.is_valid():
+            form.save(owner_contact=contact)
+            print(contactId)
+            return redirect('app_locations', contactId = contactId)
+    else:
+        form = LocationForm()
+    return render(request, 'form.html', {'form': form, 'create': True, 'object': 'location'})
+
+
+@login_required
+def location_edit(request, pk):
+    location = get_object_or_404(Location, pk=pk)
+    if location.contact.contact_list.owner_list != request.user and not request.user.is_superuser:
+        raise PermissionDenied
+    if request.method == 'POST':
+        form = LocationForm(instance=location, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('app_locations', contactId = location.contact.id)
+    else:
+        form = LocationForm(instance=location)
+    return render(request, 'form.html', {'form': form, 'create': False, 'object': 'location', 'location': location})
+
 
 
 def app_contact_list_contact(request, pk):
     try:
         # Ojo hay que validar bien
         contacts = Contact.objects.all()
+        print contacts
     except Contact.DoesNotExist:
         contacts = None
     return render_to_response('listContact.html', {"contacts": contacts}, context_instance=RequestContext(request))
@@ -72,7 +152,11 @@ def app_contact_list_create_contact(request):
         if form.is_valid():
             save_it = form.save(commit=True)
             save_it.save()
-            return redirect('../viewContacts/' + str(form.instance.contact_list.id))
+            #return redirect('../viewContacts/' + str(form.instance.contact_list.id))
+            print "ContactList.id"
+            print str(form.instance.contact_list.id)
+            return redirect('app_contact_list_contact', str(form.instance.contact_list.id))
+
     else:
         form = ContactForm()
     return render(request, 'create_contact.html', {'form': form, 'create': True})
@@ -135,22 +219,3 @@ def search(request):
         'results': results,
         'query': query,
     })
-
-
-    # def contact_list(request, agendaId):
-    # agenda = get_object_or_404(Agenda, id = agendaId)
-    # contactos = agenda.contactos.all()
-    # context = {'contactos': contactos, 'agendaId': agendaId}
-    #    return render(request, 'contact_list.html', context)
-
-    #@login_required
-    #def contact_create(request, agendaId):
-    #    if request.method == 'POST':
-    #        form = ContactoForm(data = request.POST)
-    #        if form.is_valid():
-    #            form.save()
-    #            print(agendaId)
-    #            return redirect('contacts_contact_list', agendaId = agendaId)
-    #    else:
-    #        form = ContactoForm()
-    #    return render(request, 'form.html', {'form': form, 'create': True})

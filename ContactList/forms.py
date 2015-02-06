@@ -6,7 +6,7 @@ from .models import ContactList, Contact, Company, Location, LocationData
 class ContactListForm(ModelForm):
     class Meta:
         model = ContactList
-        exclude = ('owner_list',)
+        exclude = ('owner_list', )
 
     def save(self, commit=True, owner_list=None):
         if not self.instance.pk:
@@ -19,6 +19,14 @@ class ContactListForm(ModelForm):
 class ContactForm(ModelForm):
     class Meta:
         model = Contact
+        exclude = ('contact_list',)
+
+    def save(self, commit=True, contact_list=None):
+        if not self.instance.pk:
+            if not contact_list:
+                raise TypeError("Contact List is required to create a Contact.")
+            self.instance.contact_list = contact_list
+        return super(ContactForm, self).save(commit)
 
 class CompanyForm(ModelForm):
     class Meta:
@@ -27,6 +35,14 @@ class CompanyForm(ModelForm):
 class LocationForm(ModelForm):
     class Meta:
         model = Location
+        exclude = ('owner_contact', )
+
+    def save(self, commit=True, owner_contact=None):
+        if not self.instance.pk:
+            if not owner_contact:
+                raise TypeError("Contact is required to create a Location.")
+            self.instance.owner_contact = owner_contact
+        return super(LocationForm, self).save(commit)
 
 class LocationDataForm(ModelForm):
     class Meta:

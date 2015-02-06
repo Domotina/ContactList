@@ -21,7 +21,8 @@
                 View all created by {{ contact_list.owner_list.username }}</a>
             </li>
             {% if user.is_authenticated %}
-                <li><a href='{% url "app_contact_list_contact" contact_list.pk %}'>View contacts</a></li>
+                <li><a href='{% url "app_contacts" contact_list.pk %}'>View contacts</a></li>
+                <!--li><a href='{% url "app_contact_list_contact" contact_list.pk %}'>View contacts</a></li-->
             {% endif %}
         </ul>
     </li>
