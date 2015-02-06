@@ -26,7 +26,6 @@ TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = (
@@ -35,8 +34,10 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'django.contrib.auth',
+    'django.contrib.humanize',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'widget_tweaks',
@@ -64,7 +65,6 @@ WSGI_APPLICATION = 'CRUD.wsgi.application'
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
 DATABASES = {}
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
@@ -94,10 +94,9 @@ TEMPLATE_DIRS = (
 )
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
-
-LOGIN_URL = 'agenda_login'
-LOGOUT_URL = 'agenda_logout'
 SITE_ID = 1
+#LOGIN_URL = 'agenda_login'
+#LOGOUT_URL = 'agenda_logout'
 LOGIN_REDIRECT_URL = '/'
 
 # Parse database configuration from $DATABASE_URL
