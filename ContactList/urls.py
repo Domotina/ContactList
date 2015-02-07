@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 
 
 urlpatterns = patterns('ContactList.views',
-    url(r'^$', 'contact_lists', name='home'),
+    url(r'^$', 'home', name='home'),
 
 
     # Used for Agenda
@@ -21,6 +21,10 @@ urlpatterns = patterns('ContactList.views',
     url(r'^contact/(?P<contactId>[-\w]+)/locations/create$', 'location_create', name='app_location_create'),
     url(r'^locations/edit/(?P<pk>\d+)/$', 'location_edit', name='app_location_edit'),
 
+    # Used for social_networks
+    url(r'^contact/(?P<contactId>[-\w]+)/socials/$', 'social_networks', name='app_social_networks'),
+    url(r'^contact/(?P<contactId>[-\w]+)/socials/create$', 'social_network_create', name='app_social_network_create'),
+    url(r'^socials/edit/(?P<pk>\d+)/$', 'social_network_edit', name='app_social_network_edit'),
 
 
     url(r'^viewContacts/(?P<pk>\d+)/$', 'app_contact_list_contact', name='app_contact_list_contact'),

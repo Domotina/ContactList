@@ -2,9 +2,10 @@
 from django.db import models
 # Importation of User model from Django authentication framework.
 from django.contrib.auth.models import User
+from django.conf import settings
 
 class Company(models.Model):
-    name_company = models.CharField('name_company',max_length=100)
+    name_company = models.CharField('Name',max_length=100)
     class Meta:
         verbose_name = 'company'
         verbose_name_plural = 'companies'
@@ -16,7 +17,7 @@ class Company(models.Model):
 
 class TypeData(models.Model):
 
-    type_data = models.CharField('type_data',max_length=50)
+    type_data = models.CharField('Type Data',max_length=50)
 
     class Meta:
         ordering = ['type_data']
@@ -32,7 +33,7 @@ class PublicContactListManager(models.Manager):
 
 class ContactList(models.Model):
 
-    name_list = models.CharField('name list',max_length=100)
+    name_list = models.CharField('Name',max_length=100)
     owner_list = models.ForeignKey(User, verbose_name = "owner_list", related_name = "contact_lists")
     is_public = models.BooleanField('public', default = True)
 
@@ -47,14 +48,12 @@ class ContactList(models.Model):
     def __unicode__(self):
         return '%s' % self.name_list
 
+
 class Contact(models.Model):
-    first_name = models.CharField('first_name',max_length=50)
-    second_name = models.CharField('second_name',max_length=50)
-    last_name = models.CharField('last_name',max_length=50)
-    facebook = models.CharField('Facebook',max_length=100)
-    google = models.CharField('Google+',max_length=100)
-    twitter = models.CharField('Twitter',max_length=100)
-    contact_company = models.ForeignKey(Company,blank=True,null=True)
+    first_name = models.CharField('First Name', max_length=50)
+    second_name = models.CharField('Middle Name', max_length=50)
+    last_name = models.CharField('Last Name', max_length=50)
+    contact_company = models.ForeignKey(Company, blank=True, null=True)
     contact_list = models.ForeignKey(ContactList)
 
     class Meta:
@@ -65,6 +64,31 @@ class Contact(models.Model):
     def __unicode__(self):
         return '%s' % self.last_name+' '+self.first_name+' '+self.second_name
 
+class SocialNetworkType(models.Model):
+    name = models.CharField('Social Network', max_length=50)
+    icon = models.ImageField('Icon Image', upload_to=settings.UPLOADED_FILE_PATH)
+
+    class Meta:
+        verbose_name = 'social network type'
+        verbose_name_plural = 'social network types'
+        ordering = ['name']
+
+    def __unicode__(self):
+        return self.name
+
+
+class SocialNetwork(models.Model):
+    type = models.ForeignKey(SocialNetworkType)
+    url = models.CharField('Link', max_length=200)
+    owner = models.ForeignKey(Contact)
+
+    class Meta:
+        verbose_name = 'social network'
+        verbose_name_plural = 'social networks'
+
+    def __unicode__(self):
+        return '%s %s' % (self.name, self.url)
+
 class LocationData(models.Model):
 
     location_data = models.CharField('type',max_length=255)
@@ -74,7 +98,7 @@ class LocationData(models.Model):
 
 
 class Location(models.Model):
-    informacion = models.CharField('contact information',max_length=255)
+    informacion = models.CharField('Location Information',max_length=255)
     tipo = models.ForeignKey(TypeData)
     location = models.ForeignKey(LocationData)
 
@@ -87,4 +111,3 @@ class Location(models.Model):
 
     def __unicode__(self):
         return '%s' % self.location
-

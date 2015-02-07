@@ -5,8 +5,14 @@ from django.shortcuts import get_object_or_404, redirect, render, render_to_resp
 from django.template import RequestContext
 from django.db.models import Q
 
-from .forms import ContactListForm, ContactForm, CompanyForm, SearchForm, LocationDataForm, LocationForm
-from .models import ContactList, Contact, Location, LocationData
+from .forms import ContactListForm, ContactForm, CompanyForm, SearchForm, LocationDataForm, LocationForm, SocialNetworkForm
+from .models import ContactList, Contact, Location, LocationData, SocialNetwork
+
+
+def home(request):
+    contact_lists = ContactList.public.all()
+    context = {'contact_lists': contact_lists}
+    return render(request, 'index.html', context)
 
 
 def contact_lists(request):
@@ -102,6 +108,14 @@ def locations(request, contactId):
 
 
 @login_required
+def social_networks(request, contactId):
+    contact = get_object_or_404(Contact, id = contactId)
+    social_networks = SocialNetwork.objects.filter(owner = contact)
+    context = {'socialNetworks': social_networks, 'contactId': contactId, 'contact': contact}
+    return render(request, 'social_networks.html', context)
+
+
+@login_required
 def location_create(request, contactId):
     contact = get_object_or_404(Contact, id = contactId)
     if request.method == 'POST':
@@ -114,22 +128,46 @@ def location_create(request, contactId):
         form = LocationForm()
     return render(request, 'form.html', {'form': form, 'create': True, 'object': 'location'})
 
+@login_required
+def social_network_create(request, contactId):
+    contact = get_object_or_404(Contact, id=contactId)
+    if request.method == 'POST':
+        form = SocialNetworkForm(data = request.POST)
+        if form.is_valid():
+            form.save(owner=contact)
+            return redirect('app_social_networks', contactId = contactId)
+    else:
+        form = SocialNetworkForm()
+    return render(request, 'form.html', {'form': form, 'create': True, 'object': 'Social Network'})
 
 @login_required
 def location_edit(request, pk):
     location = get_object_or_404(Location, pk=pk)
-    if location.contact.contact_list.owner_list != request.user and not request.user.is_superuser:
+    if location.owner_contact.contact_list.owner_list != request.user and not request.user.is_superuser:
         raise PermissionDenied
     if request.method == 'POST':
         form = LocationForm(instance=location, data=request.POST)
         if form.is_valid():
             form.save()
-            return redirect('app_locations', contactId = location.contact.id)
+            return redirect('app_locations', contactId = location.owner_contact.id)
     else:
         form = LocationForm(instance=location)
     return render(request, 'form.html', {'form': form, 'create': False, 'object': 'location', 'location': location})
 
 
+@login_required
+def social_network_edit(request, pk):
+    socialNetwork = get_object_or_404(SocialNetwork, pk = pk)
+    if socialNetwork.owner.contact_list.owner_list != request.user and not request.user.is_superuser:
+        raise PermissionDenied
+    if request.method == 'POST':
+        form = SocialNetworkForm(instance=socialNetwork, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('app_social_networks', contactId = socialNetwork.owner.id)
+    else:
+        form = SocialNetworkForm(instance=socialNetwork)
+    return render(request, 'form.html', {'form': form, 'create': False, 'object':'Social Network', 'social_network': socialNetwork})
 
 def app_contact_list_contact(request, pk):
     try:
@@ -219,3 +257,4 @@ def search(request):
         'results': results,
         'query': query,
     })
+

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Contacts for {{ contactList }}{% endblock %}
 
@@ -40,7 +41,14 @@
                 <a href='{% url "app_contact_edit" contact.id %}'>{{ contact }}</a>
             </td>
             <td>{{ contact.contact_company.name_company }}</td>
-            <td><a href='{% url "app_locations" contact.id %}'>View locations</a></td>
+            <td>
+                <a href='{% url "app_locations" contact.id %}' title="View locations">
+                    <img src='{% static "img/user_cards.png" %}'>
+                </a>
+                <a href='{% url "app_social_networks" contact.id %}' title="View social networks">
+                    <img src='{% static "img/user_cards.png" %}'>
+                </a>
+            </td>
         </tr>
         {% empty %}
         <tr>

@@ -1,7 +1,7 @@
 from django.forms import ModelForm
 from django import forms
 
-from .models import ContactList, Contact, Company, Location, LocationData
+from .models import ContactList, Contact, Company, Location, LocationData, SocialNetwork
 
 class ContactListForm(ModelForm):
     class Meta:
@@ -44,6 +44,20 @@ class LocationForm(ModelForm):
             self.instance.owner_contact = owner_contact
         return super(LocationForm, self).save(commit)
 
+
+class SocialNetworkForm(ModelForm):
+    class Meta:
+        model = SocialNetwork
+        exclude = ('owner', )
+
+    def save(self, commit=True, owner=None):
+        if not self.instance.pk:
+            if not owner:
+                raise TypeError("Contact is required to create a Social Network account.")
+            self.instance.owner = owner
+        return super(SocialNetworkForm, self).save(commit)
+
+
 class LocationDataForm(ModelForm):
     class Meta:
         model = LocationData
@@ -51,4 +65,8 @@ class LocationDataForm(ModelForm):
 class SearchForm(ModelForm):
     name = forms.CharField(label='Name', max_length=100)
     last_name = forms.CharField(label='Last Name', max_length=100)
+
+    class Meta:
+        model = Contact
+
 

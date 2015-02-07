@@ -118,3 +118,5 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+
+UPLOADED_FILE_PATH = 'ContactList/static/img/uploaded/'
