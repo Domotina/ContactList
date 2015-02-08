@@ -5,7 +5,8 @@ from django.shortcuts import get_object_or_404, redirect, render, render_to_resp
 from django.template import RequestContext
 from django.db.models import Q
 
-from .forms import ContactListForm, ContactForm, CompanyForm, SearchForm, LocationDataForm, LocationForm, SocialNetworkForm
+from .forms import ContactListForm, ContactForm, CompanyForm, SearchForm, LocationDataForm, LocationForm, \
+    SocialNetworkForm
 from .models import ContactList, Contact, Location, LocationData, SocialNetwork
 
 
@@ -58,28 +59,42 @@ def contact_list_edit(request, pk):
             return redirect('app_contact_list_user', username=request.user.username)
     else:
         form = ContactListForm(instance=contact_list)
-    return render(request, 'form.html', {'form': form, 'create': False, 'object': 'contact list', 'contact_list': contact_list})
+    return render(request, 'form.html',
+                  {'form': form, 'create': False, 'object': 'contact list', 'contact_list': contact_list})
 
 
 @login_required
 def contacts(request, contactListId):
-    contactList = get_object_or_404(ContactList, id = contactListId)
-    contacts = Contact.objects.filter(contact_list = contactList)
+    contactList = get_object_or_404(ContactList, id=contactListId)
+    contacts = Contact.objects.filter(contact_list=contactList)
     context = {'contacts': contacts, 'contactListId': contactListId, 'contactList': contactList}
     return render(request, 'contacts.html', context)
 
 
 @login_required
 def contact_create(request, contactListId):
-    contactList = get_object_or_404(ContactList, id = contactListId)
+    contactList = get_object_or_404(ContactList, id=contactListId)
     if request.method == 'POST':
-        form = ContactForm(data = request.POST)
+        form = ContactForm(data=request.POST)
         if form.is_valid():
             form.save(contact_list=contactList)
-            return redirect('app_contacts', contactListId = contactListId)
+            return redirect('app_contacts', contactListId=contactListId)
     else:
         form = ContactForm()
     return render(request, 'form.html', {'form': form, 'create': True, 'object': 'contact'})
+
+
+@login_required
+def company_create(request, contactListId):
+    contactList = get_object_or_404(ContactList, id=contactListId)
+    if request.method == 'POST':
+        form = CompanyForm(data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('app_contacts', contactListId=contactListId)
+    else:
+        form = CompanyForm()
+    return render(request, 'form.html', {'form': form, 'create': True, 'object': 'Company'})
 
 
 @login_required
@@ -91,7 +106,7 @@ def contact_edit(request, pk):
         form = ContactForm(instance=contact, data=request.POST)
         if form.is_valid():
             form.save()
-            return redirect('app_contacts', contactListId = contact.contact_list.id)
+            return redirect('app_contacts', contactListId=contact.contact_list.id)
     else:
         form = ContactForm(instance=contact)
     return render(request, 'form.html', {'form': form, 'create': False, 'object': 'contact', 'contact': contact})
@@ -99,9 +114,9 @@ def contact_edit(request, pk):
 
 @login_required
 def locations(request, contactId):
-    contact = get_object_or_404(Contact, id = contactId)
+    contact = get_object_or_404(Contact, id=contactId)
     print contact
-    locations = Location.objects.filter(owner_contact = contact)
+    locations = Location.objects.filter(owner_contact=contact)
     print locations
     context = {'locations': locations, 'contactId': contactId, 'contact': contact}
     return render(request, 'locations.html', context)
@@ -109,36 +124,38 @@ def locations(request, contactId):
 
 @login_required
 def social_networks(request, contactId):
-    contact = get_object_or_404(Contact, id = contactId)
-    social_networks = SocialNetwork.objects.filter(owner = contact)
+    contact = get_object_or_404(Contact, id=contactId)
+    social_networks = SocialNetwork.objects.filter(owner=contact)
     context = {'socialNetworks': social_networks, 'contactId': contactId, 'contact': contact}
     return render(request, 'social_networks.html', context)
 
 
 @login_required
 def location_create(request, contactId):
-    contact = get_object_or_404(Contact, id = contactId)
+    contact = get_object_or_404(Contact, id=contactId)
     if request.method == 'POST':
-        form = LocationForm(data = request.POST)
+        form = LocationForm(data=request.POST)
         if form.is_valid():
             form.save(owner_contact=contact)
             print(contactId)
-            return redirect('app_locations', contactId = contactId)
+            return redirect('app_locations', contactId=contactId)
     else:
         form = LocationForm()
     return render(request, 'form.html', {'form': form, 'create': True, 'object': 'location'})
+
 
 @login_required
 def social_network_create(request, contactId):
     contact = get_object_or_404(Contact, id=contactId)
     if request.method == 'POST':
-        form = SocialNetworkForm(data = request.POST)
+        form = SocialNetworkForm(data=request.POST)
         if form.is_valid():
             form.save(owner=contact)
-            return redirect('app_social_networks', contactId = contactId)
+            return redirect('app_social_networks', contactId=contactId)
     else:
         form = SocialNetworkForm()
     return render(request, 'form.html', {'form': form, 'create': True, 'object': 'Social Network'})
+
 
 @login_required
 def location_edit(request, pk):
@@ -149,7 +166,7 @@ def location_edit(request, pk):
         form = LocationForm(instance=location, data=request.POST)
         if form.is_valid():
             form.save()
-            return redirect('app_locations', contactId = location.owner_contact.id)
+            return redirect('app_locations', contactId=location.owner_contact.id)
     else:
         form = LocationForm(instance=location)
     return render(request, 'form.html', {'form': form, 'create': False, 'object': 'location', 'location': location})
@@ -157,17 +174,19 @@ def location_edit(request, pk):
 
 @login_required
 def social_network_edit(request, pk):
-    socialNetwork = get_object_or_404(SocialNetwork, pk = pk)
+    socialNetwork = get_object_or_404(SocialNetwork, pk=pk)
     if socialNetwork.owner.contact_list.owner_list != request.user and not request.user.is_superuser:
         raise PermissionDenied
     if request.method == 'POST':
         form = SocialNetworkForm(instance=socialNetwork, data=request.POST)
         if form.is_valid():
             form.save()
-            return redirect('app_social_networks', contactId = socialNetwork.owner.id)
+            return redirect('app_social_networks', contactId=socialNetwork.owner.id)
     else:
         form = SocialNetworkForm(instance=socialNetwork)
-    return render(request, 'form.html', {'form': form, 'create': False, 'object':'Social Network', 'social_network': socialNetwork})
+    return render(request, 'form.html',
+                  {'form': form, 'create': False, 'object': 'Social Network', 'social_network': socialNetwork})
+
 
 def app_contact_list_contact(request, pk):
     try:
@@ -190,7 +209,7 @@ def app_contact_list_create_contact(request):
         if form.is_valid():
             save_it = form.save(commit=True)
             save_it.save()
-            #return redirect('../viewContacts/' + str(form.instance.contact_list.id))
+            # return redirect('../viewContacts/' + str(form.instance.contact_list.id))
             print "ContactList.id"
             print str(form.instance.contact_list.id)
             return redirect('app_contact_list_contact', str(form.instance.contact_list.id))
@@ -200,61 +219,15 @@ def app_contact_list_create_contact(request):
     return render(request, 'create_contact.html', {'form': form, 'create': True})
 
 
-def app_create_company(request):
-    form = CompanyForm(request.POST or None)
-    return render_to_response('create_company.html', locals(), context_instance=RequestContext(request))
-
-
-def CompanyView(request):
-    if request.method == 'POST':
-        form = CompanyForm(data=request.POST)
-        if form.is_valid():
-            save_it = form.save(commit=True)
-            save_it.save()
-            return redirect('../createNewContact', username=request.user.username)
-    else:
-        form = CompanyForm()
-    return render(request, 'create_contact.html', {'form': form, 'create': True})
-
-
-def create_location(request):
-    if request.method == 'POST':
-        form = LocationForm(data=request.POST)
-        if form.is_valid():
-            save_it = form.save(commit=True)
-            save_it.save()
-            return render_to_response('create_location_data.html', locals(), context_instance=RequestContext(request))
-    else:
-        form = LocationForm()
-    return render(request, 'create_location.html', {'form': form, 'create': True})
-
-def create_location_data(request):
-    if request.method == 'POST':
-        form = LocationDataForm(data=request.POST)
-        if form.is_valid():
-            save_it = form.save(commit=True)
-            save_it.save()
-            return redirect('../viewContacts/' + str(form.instance.contact_list.id))
-    else:
-        form = LocationDataForm()
-    return render(request, 'create_location_data.html', {'form': form, 'create': True})
-
-def SearchContact(request):
-    return render_to_response('search_contact.html', locals(), context_instance=RequestContext(request))
-
-
 def search(request):
-    query = request.GET.get('q', '')
-    if query:
-        qset = (
-            Q(name__icontains=query) |
-            Q(last_name__icontains=query)
-        )
-        results = Contact.objects.filter(qset).distinct()
-    else:
-        results = []
-    return render_to_response('search_contact.html', {
-        'results': results,
-        'query': query,
-    })
+    form = SearchForm(data=request.GET)
+    contact = None
+    if form.is_valid():
+        name = form.cleaned_data['name']
+        if name <> None:
+            contact = Contact.first_name.filter(name=name)
+    return render(request, 'search_contact.html', {'data': True, 'contacts': contact})
+
+
+
 

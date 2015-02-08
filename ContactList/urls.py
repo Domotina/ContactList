@@ -26,16 +26,11 @@ urlpatterns = patterns('ContactList.views',
     url(r'^contact/(?P<contactId>[-\w]+)/socials/create$', 'social_network_create', name='app_social_network_create'),
     url(r'^socials/edit/(?P<pk>\d+)/$', 'social_network_edit', name='app_social_network_edit'),
 
+    #Used for company
+    url(r'^contactList/(?P<contactListId>[-\w]+)/company/create$', 'company_create', name='app_company'),
+
 
     url(r'^viewContacts/(?P<pk>\d+)/$', 'app_contact_list_contact', name='app_contact_list_contact'),
-    url(r'^createNewContact/(?P<pk>\d+)/$', 'app_create_contact', name='app_create_contact'),
-    url(r'^createContact/(?P<pk>\d+)/$', 'app_contact_list_create_contact', name='app_contact_list_create_contact'),
-    url(r'^createCompany/$', 'app_create_company', name='app_create_company'),
-    url(r'^create_NewCompany/create_contact.html$', 'CompanyView', name='CompanyView'),
-    url(r'^create_NewContact/listContact.html$', 'app_contact_list_create_contact', name='app_contact_list_create_contact'),
-    url(r'^search/$', 'SearchContact', name='SearchContact'),
-    url(r'^search/$', 'search', name='search'),
-    url(r'^createLocation/$', 'create_location', name='create_location'),
-    url(r'^createLocationData/$', 'create_location_data', name='create_location_data'),
+    url(r'^search/$', 'search', name='app_search'),
 )
 

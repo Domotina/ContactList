@@ -1,41 +1,31 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
 {% block content %}
-{% url "app_contact_list_create_contact" as action_url %}
+<div class="navbar navbar-default">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Contacts</a>
+    </div>
+    <div class="navbar-collapse collapse navbar-responsive-collapse">
+        <ul class="nav navbar-nav">
+            {% if user.is_authenticated %}
+                <li><a href='{% url "app_contact_create" contactListId %}'>Create</a></li>
+                <li><a href='{% url "app_company" contactListId %}'>Add Company</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
 <div class="container">
     <div class="col-md-10">
         <h1>Create Contact</h1>
         <form method="post" action="{{ action_url }}">
             {% csrf_token %}
             {{ form|crispy }}
-            <input type="submit" class="btn btn-primary" value="Create Contact"/>
-            <input type="reset" class="btn btn-default" value="Reset"/>
-            <input type="reset" class="btn btn-default" value="Return"/>
         </form>
     </div>
 </div>
-<script type="text/javascript">
-    $(document).ready(function(){
-        var contact_company=$('#id_contact_company');
-        var addButton = $('<button class="btn btn-default">');
-        addButton.append($('<span class="glyphicon glyphicon-plus">'));
-        contact_company.css({'width':'90%', 'display':'inline'});
-        addButton.css({'display':'inline', 'margin-left':'1%'});
-        addButton.insertAfter(contact_company);
-
-        addButton.on('click', function(){
-            window.location.pathname = '/createCompany/';
-            return false;
-        });
-
-        var id = window.location.pathname;
-            id = id.split('/');
-            id = id[id.length-2];
-
-        var hidden = $('<input type="hidden" value="' + id + '" name="contact_list_id" id="contact_list_id">');
-        hidden.insertAfter(addButton);
-
-    });
-
-</script>
 {% endblock content %}

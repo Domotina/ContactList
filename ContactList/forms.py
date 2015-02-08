@@ -3,6 +3,7 @@ from django import forms
 
 from .models import ContactList, Contact, Company, Location, LocationData, SocialNetwork
 
+
 class ContactListForm(ModelForm):
     class Meta:
         model = ContactList

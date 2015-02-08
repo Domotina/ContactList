@@ -19,9 +19,11 @@
     <div class="navbar-collapse collapse navbar-responsive-collapse">
         <ul class="nav navbar-nav">
             {% if user.is_authenticated %}
-                <li><a href='{% url "app_contact_create" contactListId %}'>Add contact</a></li>
+            <li><a href='{% url "app_contact_create" contactListId %}'>Add contact</a></li>
             {% endif %}
-            <li><a href="/search">Search</a></li>
+
+            <li><a href='{% url "app_company" contactListId %}'>Add company</a></li>
+            <li><a href='{% url "app_search" %}'>Search</a></li>
         </ul>
     </div>
 </div>
@@ -46,7 +48,7 @@
                     <img src='{% static "img/user_cards.png" %}'>
                 </a>
                 <a href='{% url "app_social_networks" contact.id %}' title="View social networks">
-                    <img src='{% static "img/user_cards.png" %}'>
+                    <img src='{% static "img/persons.png" %}'>
                 </a>
             </td>
         </tr>
@@ -61,6 +63,7 @@
 <div>
     <a href='{% url "app_contact_lists" %}'>Go back</a>
 </div>
+
 {% endblock %}
 
 
