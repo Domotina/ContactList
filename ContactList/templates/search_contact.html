@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+<div class="navbar navbar-default">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+    </div>
+    <div class="navbar-collapse collapse navbar-responsive-collapse">
+        <ul class="nav navbar-nav">
+            <li><a href='{% url "app_search" %}'>Search Contact</a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="container">
+    <div class="col-md-10">
+        <h1>Search Contact</h1>
+
+        <form class="form-horizontal" method="get">
+            {% csrf_token %}
+            <fieldset>
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">Name: </label>
+
+                    <div class="col-lg-10">
+                        <input class="form-control" placeholder="Name Contact to Search" type="text">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-lg-2 control-label">Last Name: </label>
+
+                    <div class="col-lg-10">
+                        <input class="form-control" placeholder="Last Name Contact to Search" type="text">
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+{% if data %}
+<div>
+    <h2>Results for search:</h2>
+
+    <div>
+        <table class="table table-striped table-hover space">
+            <thead>
+            <tr>
+                <th>Full name</th>
+                <th>Company</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for contact in contacts %}
+            <tr>
+                <td>
+                    <a href='{% url "app_contact_edit" contact.id %}'>{{ contact }}</a>
+                </td>
+                <td>{{ contact.contact_company.name_company }}</td>
+                <td>
+                    <a href='{% url "app_locations" contact.id %}' title="View locations">
+                        <img src='{% static "img/user_cards.png" %}'>
+                    </a>
+                    <a href='{% url "app_social_networks" contact.id %}' title="View social networks">
+                        <img src='{% static "img/group.png" %}'>
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3">No contacts of the search.</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <a href='{% url "app_contact_lists" %}'>Go back</a>
+    </div>
+</div>
+{% endif %}
+{% endblock content %}

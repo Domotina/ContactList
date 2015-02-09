@@ -1,0 +1,9 @@
+{% extends "contact_lists.html" %}
+
+{% block title %}{{ owner.username }}'s contact lists{% endblock %}
+
+{% block heading %}
+<h2>{{ owner.username }}'s contact lists<br>
+    <small>{{ contact_lists.count }} contact lists in total</small>
+</h2>
+{% endblock %}
