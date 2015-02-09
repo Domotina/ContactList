@@ -1,20 +1,25 @@
 from django.forms import ModelForm
 from django import forms
 
-from .models import ContactList, Contact, Company, Location, LocationData, SocialNetwork
+from .models import ContactList, Contact, Company, Location, SocialNetwork
 
 
 class ContactListForm(ModelForm):
     class Meta:
         model = ContactList
-        exclude = ('owner_list', )
+        exclude = ('owner', )
 
-    def save(self, commit=True, owner_list=None):
+    def save(self, commit=True, owner=None):
         if not self.instance.pk:
-            if not owner_list:
+            if not owner:
                 raise TypeError("Owner is required to create a Contact List.")
-            self.instance.owner_list = owner_list
+            self.instance.owner = owner
         return super(ContactListForm, self).save(commit)
+
+
+class CompanyForm(ModelForm):
+    class Meta:
+        model = Company
 
 
 class ContactForm(ModelForm):
@@ -29,20 +34,17 @@ class ContactForm(ModelForm):
             self.instance.contact_list = contact_list
         return super(ContactForm, self).save(commit)
 
-class CompanyForm(ModelForm):
-    class Meta:
-        model = Company
 
 class LocationForm(ModelForm):
     class Meta:
         model = Location
-        exclude = ('owner_contact', )
+        exclude = ('contact', )
 
-    def save(self, commit=True, owner_contact=None):
+    def save(self, commit=True, contact=None):
         if not self.instance.pk:
-            if not owner_contact:
+            if not contact:
                 raise TypeError("Contact is required to create a Location.")
-            self.instance.owner_contact = owner_contact
+            self.instance.contact = contact
         return super(LocationForm, self).save(commit)
 
 
@@ -58,10 +60,6 @@ class SocialNetworkForm(ModelForm):
             self.instance.owner = owner
         return super(SocialNetworkForm, self).save(commit)
 
-
-class LocationDataForm(ModelForm):
-    class Meta:
-        model = LocationData
 
 class SearchForm(ModelForm):
     name = forms.CharField(label='Name', max_length=100)

@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block title %}Contacts for {{ contactList }}{% endblock %}
+{% block title %}Contacts for {{ contact_list }}{% endblock %}
 
 {% block heading %}
-<h5><a href='/'>Home</a> > {{ contactList }}</h5>
+<h5><a href='/'>Home</a> > {{ contact_list }}</h5>
 {% endblock %}
 
 {% block content %}
@@ -19,10 +19,10 @@
     <div class="navbar-collapse collapse navbar-responsive-collapse">
         <ul class="nav navbar-nav">
             {% if user.is_authenticated %}
-            <li><a href='{% url "app_contact_create" contactListId %}'>Add contact</a></li>
+            <li><a href='{% url "app_contact_create" contact_list.id %}'>Add contact</a></li>
             {% endif %}
 
-            <li><a href='{% url "app_company" contactListId %}'>Add company</a></li>
+            <li><a href='{% url "app_company" contact_list.id %}'>Add company</a></li>
             <li><a href='{% url "app_search" %}'>Search</a></li>
         </ul>
     </div>
@@ -42,13 +42,13 @@
             <td>
                 <a href='{% url "app_contact_edit" contact.id %}'>{{ contact }}</a>
             </td>
-            <td>{{ contact.contact_company.name_company }}</td>
+            <td>{{ contact.company.name }}</td>
             <td>
                 <a href='{% url "app_locations" contact.id %}' title="View locations">
                     <img src='{% static "img/user_cards.png" %}'>
                 </a>
                 <a href='{% url "app_social_networks" contact.id %}' title="View social networks">
-                    <img src='{% static "img/persons.png" %}'>
+                    <img src='{% static "img/group.png" %}'>
                 </a>
             </td>
         </tr>
