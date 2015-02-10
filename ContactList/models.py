@@ -36,9 +36,19 @@ class ContactList(models.Model):
     def __unicode__(self):
         return '%s' % self.name
 
+
 class Collaborator(models.Model):
-    contactList = models.ForeignKey(ContactList, related_name="collaborators")
+    contact_list = models.ForeignKey(ContactList, verbose_name = "contact_list", related_name="collaborators")
     username = models.ForeignKey(User, verbose_name = "username", related_name = "collaborators")
+
+    class Meta:
+        verbose_name = 'collaborator'
+        verbose_name_plural = 'collaborators'
+        ordering = ['contact_list']
+
+    def __unicode__(self):
+        return '%s' % self.username
+
 
 class Contact(models.Model):
     first_name = models.CharField('first name', max_length=50)

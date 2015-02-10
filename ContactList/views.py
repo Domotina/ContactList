@@ -5,8 +5,8 @@ from django.shortcuts import get_object_or_404, redirect, render, render_to_resp
 from django.template import RequestContext
 from django.db.models import Q
 
-from .forms import ContactListForm, ContactForm, CompanyForm, SearchForm, LocationForm, SocialNetworkForm
-from .models import ContactList, Contact, Location, SocialNetwork
+from .forms import ContactListForm, CollaboratorForm, ContactForm, CompanyForm, SearchForm, LocationForm, SocialNetworkForm
+from .models import ContactList, Collaborator, Contact, Location, SocialNetwork
 
 
 def home(request):
@@ -41,6 +41,7 @@ def contact_list_create(request):
         if form.is_valid():
             form.save(owner=request.user)
             return redirect('app_contact_list_user', username=request.user.username)
+            #return redirect('app_contact_lists')
     else:
         form = ContactListForm()
     return render(request, 'form.html', {'form': form, 'create': True, 'object': 'contact list'})
@@ -63,13 +64,34 @@ def contact_list_edit(request, pk):
 
 
 @login_required
+def collaborators(request, contact_list_id):
+    contact_list = get_object_or_404(ContactList, id = contact_list_id)
+    collaborators = Collaborator.objects.filter(contact_list = contact_list)
+    context = {'collaborators': collaborators, 'contact_list': contact_list}
+    return render(request, 'collaborators.html', context)
+
+
+@login_required
+def collaborator_create(request, contact_list_id):
+    contact_list = get_object_or_404(ContactList, id = contact_list_id)
+    if request.method == 'POST':
+        form = CollaboratorForm(data = request.POST)
+        if form.is_valid():
+            form.save(contact_list=contact_list)
+            return redirect('app_collaborators', contact_list_id=contact_list_id)
+    else:
+        form = CollaboratorForm()
+    return render(request, 'form.html', {'form': form, 'create': True, 'object': 'collaborator'})
+
+
+@login_required
 def contacts(request, contact_list_id):
     contact_list = get_object_or_404(ContactList, id=contact_list_id)
-    print contact_list
+    # Verificar si es colaborador de la agenda
+    #Collaborator.objects.filter(contact_list = contact_list)
+    #print contact_list.collaborators
     contacts = Contact.objects.filter(contact_list=contact_list)
-    print contacts
     context = {'contacts': contacts, 'contact_list': contact_list}
-    #print context
     return render(request, 'contacts.html', context)
 
 

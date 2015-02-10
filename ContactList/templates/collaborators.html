@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Contacts for {{ contact_list }}{% endblock %}
+
+{% block heading %}
+<h5><a href='/'>Home</a> > {{ contact_list }}</h5>
+{% endblock %}
+
+{% block content %}
+<div class="navbar navbar-default">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+    </div>
+    <div class="navbar-collapse collapse navbar-responsive-collapse">
+        <ul class="nav navbar-nav">
+            {% if user.is_authenticated %}
+                <li><a href='{% url "app_collaborator_create" contact_list.id %}'>Add collaborator</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+<div>
+    <table class="table table-striped table-hover space">
+        <thead>
+        <tr>
+            <th>Full name</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for collaborator in collaborators %}
+        <tr>
+            <td>
+                <a href='{% url "app_collaborator_create" collaborator.id %}'>{{ collaborator }}</a>
+            </td>
+            <td><a href='{% url "app_collaborator_create" collaborator.id %}'>Edit</a></td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="2">No collaborators registered.</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div>
+    <a href='{% url "app_contact_lists" %}'>Go back</a>
+</div>
+{% endblock %}
+
+
