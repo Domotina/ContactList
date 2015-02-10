@@ -43,6 +43,9 @@ class ContactList(models.Model):
     def __unicode__(self):
         return '%s' % self.name
 
+class Collaborator(models.Model):
+    contactList = models.ForeignKey(ContactList, related_name="collaborators")
+    username = models.ForeignKey(User, verbose_name = "username", related_name = "collaborators")
 
 class Contact(models.Model):
     first_name = models.CharField('first name', max_length=50)
