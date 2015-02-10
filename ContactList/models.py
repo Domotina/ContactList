@@ -21,11 +21,17 @@ class PublicContactListManager(models.Manager):
         qs = super(PublicContactListManager, self).get_queryset()
         return qs.filter(is_public = True)
 
+class ThemeContactList(models.Model):
+    theme = models.CharField('theme',max_length=100)
+
+    def __unicode__(self):
+        return self.theme
 
 class ContactList(models.Model):
     name = models.CharField('name',max_length=100)
     owner = models.ForeignKey(User, verbose_name = "owner", related_name = "contact_lists")
     is_public = models.BooleanField('public', default = True)
+    theme = models.ForeignKey(ThemeContactList,verbose_name='theme')
     objects = models.Manager()
     public = PublicContactListManager()
     class Meta:

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import LocationType, LocationPlace, SocialNetworkType
+from models import LocationType, LocationPlace, SocialNetworkType,ThemeContactList
 
 
 class SocialNetworkTypeAdmin(admin.ModelAdmin):
@@ -13,3 +13,4 @@ class SocialNetworkTypeAdmin(admin.ModelAdmin):
 admin.site.register(LocationType)
 admin.site.register(LocationPlace)
 admin.site.register(SocialNetworkType, SocialNetworkTypeAdmin)
+admin.site.register(ThemeContactList)
