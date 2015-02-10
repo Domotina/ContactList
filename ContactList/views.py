@@ -83,6 +83,13 @@ def collaborator_create(request, contact_list_id):
         form = CollaboratorForm()
     return render(request, 'form.html', {'form': form, 'create': True, 'object': 'collaborator'})
 
+@login_required
+def collaborator_delete(request, collaborator_id):
+    collaborator = get_object_or_404(Collaborator, id = collaborator_id)
+    if collaborator.contact_list.owner != request.user and not request.user.is_superuser:
+        raise PermissionDenied
+    collaborator.delete()
+    return redirect('app_collaborators', contact_list_id=collaborator.contact_list.pk)
 
 @login_required
 def contacts(request, contact_list_id):
