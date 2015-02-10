@@ -14,14 +14,11 @@
 
         <ul class="dropdown-menu" role="menu" aria-labelledby="dropuser">
             {% if contact_list.owner == user %}
-                <li><a href='{% url "app_contact_list_edit" contact_list.pk %}'>Edit</a></li>
+                <li><a href='{% url "app_contact_list_user" contact_list.owner.username %}'>Edit</a></li>
             {% endif %}
-            <li>
-                <a href='{% url "app_contact_list_user" contact_list.owner.username %}'>
-                View all created by {{ contact_list.owner.username }}</a>
-            </li>
             {% if user.is_authenticated %}
                 <li><a href='{% url "app_contacts" contact_list.pk %}'>View contacts</a></li>
+                <li><a href='{% url "app_collaborators" contact_list.pk %}'>View collaborators</a></li>
             {% endif %}
         </ul>
     </li>
