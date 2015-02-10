@@ -1,33 +1,71 @@
+from django.forms import ModelForm
 from django import forms
-from ContactList.models import Address, Company, Contact, Email, List, Location, Phone
 
-class AddressForm(forms.ModelForm):
+from .models import ContactList, Contact, Company, Location, SocialNetwork
+
+
+class ContactListForm(ModelForm):
     class Meta:
-        model = Address
+        model = ContactList
+        exclude = ('owner', )
 
-class CompanyForm(forms.ModelForm):
+    def save(self, commit=True, owner=None):
+        if not self.instance.pk:
+            if not owner:
+                raise TypeError("Owner is required to create a Contact List.")
+            self.instance.owner = owner
+        return super(ContactListForm, self).save(commit)
+
+
+class CompanyForm(ModelForm):
     class Meta:
         model = Company
 
-class ContactForm(forms.ModelForm):
+
+class ContactForm(ModelForm):
+    class Meta:
+        model = Contact
+        exclude = ('contact_list',)
+
+    def save(self, commit=True, contact_list=None):
+        if not self.instance.pk:
+            if not contact_list:
+                raise TypeError("Contact List is required to create a Contact.")
+            self.instance.contact_list = contact_list
+        return super(ContactForm, self).save(commit)
+
+
+class LocationForm(ModelForm):
+    class Meta:
+        model = Location
+        exclude = ('contact', )
+
+    def save(self, commit=True, contact=None):
+        if not self.instance.pk:
+            if not contact:
+                raise TypeError("Contact is required to create a Location.")
+            self.instance.contact = contact
+        return super(LocationForm, self).save(commit)
+
+
+class SocialNetworkForm(ModelForm):
+    class Meta:
+        model = SocialNetwork
+        exclude = ('owner', )
+
+    def save(self, commit=True, owner=None):
+        if not self.instance.pk:
+            if not owner:
+                raise TypeError("Contact is required to create a Social Network account.")
+            self.instance.owner = owner
+        return super(SocialNetworkForm, self).save(commit)
+
+
+class SearchForm(ModelForm):
+    name = forms.CharField(label='Name', max_length=100)
+    last_name = forms.CharField(label='Last Name', max_length=100)
+
     class Meta:
         model = Contact
 
-class EmailForm(forms.ModelForm):
-    class Meta:
-        model = Email
 
-class ListForm(forms.ModelForm):
-    class Meta:
-        model = List
-        widgets = {
-            'password': forms.PasswordInput(),
-        }
-
-class LocationForm(forms.ModelForm):
-    class Meta:
-        model = Location
-
-class PhoneForm(forms.ModelForm):
-    class Meta:
-        model = Phone
