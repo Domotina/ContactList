@@ -6,7 +6,7 @@ from django.conf import settings
 
 
 class Company(models.Model):
-    name = models.CharField('name',max_length=100)
+    name = models.CharField('name', max_length=100)
     class Meta:
         verbose_name = 'company'
         verbose_name_plural = 'companies'

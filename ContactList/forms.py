@@ -61,11 +61,7 @@ class SocialNetworkForm(ModelForm):
         return super(SocialNetworkForm, self).save(commit)
 
 
-class SearchForm(ModelForm):
-    name = forms.CharField(label='Name', max_length=100)
-    last_name = forms.CharField(label='Last Name', max_length=100)
-
-    class Meta:
-        model = Contact
-
+class SearchForm(forms.Form):
+    name = forms.CharField(label='Name', max_length=100, required=False)
+    last_name = forms.CharField(label='Last Name', max_length=100, required=False)
 

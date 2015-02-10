@@ -2,44 +2,36 @@
 {% load static %}
 {% load crispy_forms_tags %}
 {% block content %}
-<div class="navbar navbar-default">
-    <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-        </button>
-    </div>
-    <div class="navbar-collapse collapse navbar-responsive-collapse">
-        <ul class="nav navbar-nav">
-            <li><a href='{% url "app_search" %}'>Search Contact</a></li>
-        </ul>
-    </div>
-</div>
-
 <div class="container">
     <div class="col-md-10">
         <h1>Search Contact</h1>
 
-        <form class="form-horizontal" method="get">
+         <form class="form-horizontal" method="get" action="{{ request.path }}">
             {% csrf_token %}
             <fieldset>
                 <div class="form-group">
                     <label class="col-lg-2 control-label">Name: </label>
 
                     <div class="col-lg-10">
-                        <input class="form-control" placeholder="Name Contact to Search" type="text">
+                        <input class="form-control" placeholder="Name Contact to Search" type="text" name="name">
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-lg-2 control-label">Last Name: </label>
 
                     <div class="col-lg-10">
-                        <input class="form-control" placeholder="Last Name Contact to Search" type="text">
+                        <input class="form-control" placeholder="Last Name Contact to Search" type="text" name="last_name">
                     </div>
                 </div>
             </fieldset>
+            <p><input type="submit" class="btn btn-default" value="Search"/></p>
         </form>
+
+        <!--<form action="{{ action_url }}" method="get" accept-charset="utf-8">-->
+            <!--{{ form|crispy }}-->
+            <!--{% csrf_token %}-->
+            <!--<p><input type="submit" class="btn btn-default" value="Search"/></p>-->
+        <!--</form>-->
     </div>
 </div>
 
