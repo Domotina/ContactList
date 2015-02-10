@@ -65,11 +65,9 @@ def contact_list_edit(request, pk):
 @login_required
 def contacts(request, contact_list_id):
     contact_list = get_object_or_404(ContactList, id=contact_list_id)
-    print contact_list
     contacts = Contact.objects.filter(contact_list=contact_list)
-    print contacts
     context = {'contacts': contacts, 'contact_list': contact_list}
-    #print context
+    # print context
     return render(request, 'contacts.html', context)
 
 
@@ -186,11 +184,36 @@ def company_create(request, contact_list_id):
     return render(request, 'form.html', {'form': form, 'create': True, 'object': 'company'})
 
 
+# def go_to_search(request):
+# if request.method == 'GET':
+# form = SearchForm(data=request.GET)
+# if form.is_valid():
+#             print (form)
+#             print(request.GET.get('name'))
+#             return redirect('app_search', name = "Cindy")
+#     else:
+#         form = SearchForm()
+#     return render(request, 'search_contact.html', {'data': False, 'form': form})
+
 def search(request):
-    form = SearchForm(data=request.GET)
-    contact = None
-    if form.is_valid():
-        name = form.cleaned_data['name']
-        if name <> None:
-            contact = Contact.first_name.filter(name=name)
-    return render(request, 'search_contact.html', {'data': True, 'contacts': contact})
+    print('Entro')
+    if 'name' in request.GET and request.GET['name']:
+        search_name = request.GET['name']
+        print request.GET['name']
+        contacts = Contact.objects.filter(Q(first_name__icontains=search_name))
+        context = {'data': True, 'contacts': contacts}
+        return render(request, 'search_contact.html', context)
+    else:
+        contacts = []
+
+    if 'last_name' in request.GET and request.GET['last_name']:
+        search_last_name = request.GET['last_name']
+        print request.GET['last_name']
+        contacts = Contact.objects.filter(Q(last_name__icontains=search_last_name))
+        context = {'data': True, 'contacts': contacts}
+        return render(request, 'search_contact.html', context)
+    else:
+        contacts = []
+
+    context = {'data': True, 'contacts': contacts}
+    return render(request, 'search_contact.html', context)
