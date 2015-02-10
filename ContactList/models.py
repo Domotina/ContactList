@@ -23,6 +23,7 @@ class PublicContactListManager(models.Manager):
 
 class ThemeContactList(models.Model):
     theme = models.CharField('theme',max_length=100)
+    file_theme = models.CharField('file',max_length=100)
 
     def __unicode__(self):
         return self.theme
