@@ -23,7 +23,7 @@ class PublicContactListManager(models.Manager):
 
 
 class ContactList(models.Model):
-    name_list = models.CharField('Name',max_length=100)
+    name = models.CharField('name',max_length=100)
     #owner_list = models.ForeignKey(User, verbose_name = "owner_list", related_name = "contact_lists")
     is_public = models.BooleanField('public', default = True)
     objects = models.Manager()
