@@ -23,8 +23,8 @@ class PublicContactListManager(models.Manager):
 
 
 class ContactList(models.Model):
-    name = models.CharField('name',max_length=100)
-    owner = models.ForeignKey(User, verbose_name = "owner", related_name = "contact_lists")
+    name_list = models.CharField('Name',max_length=100)
+    #owner_list = models.ForeignKey(User, verbose_name = "owner_list", related_name = "contact_lists")
     is_public = models.BooleanField('public', default = True)
     objects = models.Manager()
     public = PublicContactListManager()
@@ -36,6 +36,10 @@ class ContactList(models.Model):
     def __unicode__(self):
         return '%s' % self.name
 
+class Collaborator(models.Model):
+    contactList = models.ForeignKey(ContactList, related_name="collaborators")
+    username = models.ForeignKey(User, verbose_name = "username", related_name = "collaborators")
+    is_owner = models.BooleanField('Is Owner',default=False)
 
 class Contact(models.Model):
     first_name = models.CharField('first name', max_length=50)
