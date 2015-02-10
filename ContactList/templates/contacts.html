@@ -1,13 +1,23 @@
 {% extends "base.html" %}
+
 {% load static %}
+
+
+
 
 {% block title %}Contacts for {{ contact_list }}{% endblock %}
 
 {% block heading %}
 <h5><a href='/'>Home</a> > {{ contact_list }}</h5>
+
 {% endblock %}
 
 {% block content %}
+
+{% with "css/"|add:contact_list.theme.file_theme as theme %}
+<link rel="stylesheet" href='{% static theme %}'>
+{% endwith %}
+
 <div class="navbar navbar-default">
     <div class="navbar-header">
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
