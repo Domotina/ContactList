@@ -7,15 +7,17 @@
 {% endblock %}
 
 {% block content %}
-<ul class="list-unstyled">
-{% for contact_list in contact_lists %}
-    <li class="well">{% include "contact_list.html" %}</li>
-{% empty %}
-    <li>No contact lists. </li>
-{% endfor %}
-</ul>
-{% if user.is_authenticated %}
-<p><a class="btn btn-default" href='{% url "app_contact_list_create" %}'>
-    Create new contact list</a></p>
-{% endif %}
+<div class="well">
+    <ul class="list-unstyled">
+    {% for contact_list in contact_lists %}
+        <li class="btn">{% include "contact_list.html" %}</li>
+    {% empty %}
+        <li>No contact lists. </li>
+    {% endfor %}
+    </ul>
+    {% if user.is_authenticated %}
+    <p><a class="btn btn-default" href='{% url "app_contact_list_create" %}'>
+        Create new contact list</a></p>
+    {% endif %}
+</div>
 {% endblock %}
