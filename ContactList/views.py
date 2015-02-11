@@ -30,7 +30,7 @@ def contact_list_user(request, username):
     if request.user == user:
         contact_lists = user.contact_lists.all()
     else:
-        contact_lists = ContactList.public.filter(owner__username=username)
+        contact_lists = ContactList.objects.filter(Q(owner__username = username)).filter(Q(is_public=True)|Q(collaborators__username__username = request.user))
     context = {'contact_lists': contact_lists, 'owner': user}
     return render(request, 'contact_list_user.html', context)
 
@@ -113,7 +113,7 @@ def contacts(request, contact_list_id):
 @login_required
 def contact_create(request, contact_list_id):
     contact_list = get_object_or_404(ContactList, id=contact_list_id)
-    if not contact_list.is_editable(request.user, contact_list):
+    if not contact_list.is_editable(request.user):
         raise PermissionDenied
 
     if request.method == 'POST':
@@ -129,7 +129,7 @@ def contact_create(request, contact_list_id):
 @login_required
 def contact_edit(request, pk):
     contact = get_object_or_404(Contact, pk=pk)
-    if not contact.contact_list.is_editable(request.user, contact.contact_list):
+    if not contact.contact_list.is_editable(request.user):
         raise PermissionDenied
 
     if request.method == 'POST':
@@ -153,7 +153,7 @@ def locations(request, contact_id):
 @login_required
 def location_create(request, contact_id):
     contact = get_object_or_404(Contact, id=contact_id)
-    if not contact.contact_list.is_editable(request.user, contact.contact_list):
+    if not contact.contact_list.is_editable(request.user):
         raise PermissionDenied
 
     if request.method == 'POST':
@@ -169,7 +169,7 @@ def location_create(request, contact_id):
 @login_required
 def location_edit(request, pk):
     location = get_object_or_404(Location, pk=pk)
-    if not location.contact.contact_list.is_editable(request.user, location.contact.contact_list):
+    if not location.contact.contact_list.is_editable(request.user):
         raise PermissionDenied
 
     if request.method == 'POST':
@@ -193,7 +193,7 @@ def social_networks(request, contact_id):
 @login_required
 def social_network_create(request, contact_id):
     contact = get_object_or_404(Contact, id=contact_id)
-    if not contact.contact_list.is_editable(request.user, contact.contact_list):
+    if not contact.contact_list.is_editable(request.user):
         raise PermissionDenied
 
     if request.method == 'POST':
@@ -209,7 +209,7 @@ def social_network_create(request, contact_id):
 @login_required
 def social_network_edit(request, pk):
     social_network = get_object_or_404(SocialNetwork, pk=pk)
-    if not social_network.owner.contact_list.is_editable(request.user, social_network.owner.contact_list):
+    if not social_network.owner.contact_list.is_editable(request.user):
         raise PermissionDenied
 
     if request.method == 'POST':
