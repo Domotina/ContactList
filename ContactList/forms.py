@@ -1,7 +1,7 @@
 from django.forms import ModelForm
 from django import forms
 
-from .models import ContactList, Contact, Company, Location, SocialNetwork
+from .models import ContactList, Collaborator, Contact, Company, Location, SocialNetwork
 
 
 class ContactListForm(ModelForm):
@@ -15,6 +15,19 @@ class ContactListForm(ModelForm):
                 raise TypeError("Owner is required to create a Contact List.")
             self.instance.owner = owner
         return super(ContactListForm, self).save(commit)
+
+
+class CollaboratorForm(ModelForm):
+    class Meta:
+        model = Collaborator
+        exclude = ('contact_list', )
+
+    def save(self, commit=True, contact_list=None):
+        if not self.instance.pk:
+            if not contact_list:
+                raise TypeError("Contact list is required to create a Collaborator.")
+            self.instance.contact_list = contact_list
+        return super(CollaboratorForm, self).save(commit)
 
 
 class CompanyForm(ModelForm):
