@@ -1,15 +1,16 @@
 from django.contrib import admin
-from models import TypeData,LocationData, SocialNetworkType
-# Register your models here.
+from models import LocationType, LocationPlace, SocialNetworkType,ThemeContactList
 
-class socialNetworkTypeAdmin:
+
+class SocialNetworkTypeAdmin(admin.ModelAdmin):
     fields = ['name', 'icon']
-    list_display = ('name', )
-    list_editable = ('name', )
-    list_filter = ('name', )
-    search_fields = ('name', )
+    list_display = ('name', 'icon')
+    #list_editable = ('name', )
+    list_filter = ('name', 'icon')
+    search_fields = ('name', 'icon')
     #readonly_fields = ('name', )
 
-admin.site.register(TypeData)
-admin.site.register(LocationData)
-admin.site.register(SocialNetworkType)
+admin.site.register(LocationType)
+admin.site.register(LocationPlace)
+admin.site.register(SocialNetworkType, SocialNetworkTypeAdmin)
+admin.site.register(ThemeContactList)
