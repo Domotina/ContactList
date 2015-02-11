@@ -18,8 +18,9 @@
             {% endif %}
             {% if user.is_authenticated %}
                     <li><a href='{% url "app_contacts" contact_list.pk %}'>View contacts</a></li>
-
-                <li><a href='{% url "app_collaborators" contact_list.pk %}'>View collaborators</a></li>
+                {% if contact_list.owner == user or user.is_superadmin %}
+                    <li><a href='{% url "app_collaborators" contact_list.pk %}'>View collaborators</a></li>
+                {% endif %}
             {% endif %}
         </ul>
     </li>
