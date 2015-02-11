@@ -5,8 +5,8 @@ from django.shortcuts import get_object_or_404, redirect, render, render_to_resp
 from django.template import RequestContext
 from django.db.models import Q
 
-from .forms import ContactListForm, ContactForm, CompanyForm, SearchForm, LocationForm, SocialNetworkForm
-from .models import ContactList, Contact, Location, SocialNetwork
+from .forms import ContactListForm, CollaboratorForm, ContactForm, CompanyForm, SearchForm, LocationForm, SocialNetworkForm
+from .models import ContactList, Collaborator, Contact, Location, SocialNetwork
 
 
 def home(request):
@@ -24,6 +24,7 @@ def contact_lists(request):
     return render(request, 'contact_lists.html', context)
 
 
+@login_required
 def contact_list_user(request, username):
     user = get_object_or_404(User, username=username)
     if request.user == user:
@@ -51,6 +52,7 @@ def contact_list_edit(request, pk):
     contact_list = get_object_or_404(ContactList, pk=pk)
     if contact_list.owner != request.user and not request.user.is_superuser:
         raise PermissionDenied
+
     if request.method == 'POST':
         form = ContactListForm(instance=contact_list, data=request.POST)
         if form.is_valid():
@@ -63,19 +65,57 @@ def contact_list_edit(request, pk):
 
 
 @login_required
+def collaborators(request, contact_list_id):
+    contact_list = get_object_or_404(ContactList, id=contact_list_id)
+    # Verifica si es el usuario es el propietario o superadmin
+    if contact_list.owner != request.user and not request.user.is_superuser:
+        raise PermissionDenied
+
+    collaborators = Collaborator.objects.filter(contact_list=contact_list)
+    context = {'collaborators': collaborators, 'contact_list': contact_list}
+    return render(request, 'collaborators.html', context)
+
+
+@login_required
+def collaborator_create(request, contact_list_id):
+    contact_list = get_object_or_404(ContactList, id=contact_list_id)
+    # Verifica si es el usuario es el propietario o superadmin
+    if contact_list.owner != request.user and not request.user.is_superuser:
+        raise PermissionDenied
+
+    if request.method == 'POST':
+        form = CollaboratorForm(data = request.POST)
+        if form.is_valid():
+            form.save(contact_list=contact_list)
+            return redirect('app_collaborators', contact_list_id=contact_list_id)
+    else:
+        form = CollaboratorForm()
+    return render(request, 'form.html', {'form': form, 'create': True, 'object': 'collaborator'})
+
+
+@login_required
+def collaborator_delete(request, collaborator_id):
+    collaborator = get_object_or_404(Collaborator, id = collaborator_id)
+    if collaborator.contact_list.owner != request.user and not request.user.is_superuser:
+        raise PermissionDenied
+    collaborator.delete()
+    return redirect('app_collaborators', contact_list_id=collaborator.contact_list.pk)
+
+
+@login_required
 def contacts(request, contact_list_id):
     contact_list = get_object_or_404(ContactList, id=contact_list_id)
-    print contact_list
     contacts = Contact.objects.filter(contact_list=contact_list)
-    print contacts
     context = {'contacts': contacts, 'contact_list': contact_list}
-    #print context
     return render(request, 'contacts.html', context)
 
 
 @login_required
 def contact_create(request, contact_list_id):
     contact_list = get_object_or_404(ContactList, id=contact_list_id)
+    if not contact_list.is_editable(request.user, contact_list):
+        raise PermissionDenied
+
     if request.method == 'POST':
         form = ContactForm(data=request.POST)
         if form.is_valid():
@@ -89,8 +129,9 @@ def contact_create(request, contact_list_id):
 @login_required
 def contact_edit(request, pk):
     contact = get_object_or_404(Contact, pk=pk)
-    if contact.contact_list.owner != request.user and not request.user.is_superuser:
+    if not contact.contact_list.is_editable(request.user, contact.contact_list):
         raise PermissionDenied
+
     if request.method == 'POST':
         form = ContactForm(instance=contact, data=request.POST)
         if form.is_valid():
@@ -112,6 +153,9 @@ def locations(request, contact_id):
 @login_required
 def location_create(request, contact_id):
     contact = get_object_or_404(Contact, id=contact_id)
+    if not contact.contact_list.is_editable(request.user, contact.contact_list):
+        raise PermissionDenied
+
     if request.method == 'POST':
         form = LocationForm(data=request.POST)
         if form.is_valid():
@@ -125,8 +169,9 @@ def location_create(request, contact_id):
 @login_required
 def location_edit(request, pk):
     location = get_object_or_404(Location, pk=pk)
-    if location.contact.contact_list.owner != request.user and not request.user.is_superuser:
+    if not location.contact.contact_list.is_editable(request.user, location.contact.contact_list):
         raise PermissionDenied
+
     if request.method == 'POST':
         form = LocationForm(instance=location, data=request.POST)
         if form.is_valid():
@@ -148,6 +193,9 @@ def social_networks(request, contact_id):
 @login_required
 def social_network_create(request, contact_id):
     contact = get_object_or_404(Contact, id=contact_id)
+    if not contact.contact_list.is_editable(request.user, contact.contact_list):
+        raise PermissionDenied
+
     if request.method == 'POST':
         form = SocialNetworkForm(data=request.POST)
         if form.is_valid():
@@ -161,8 +209,9 @@ def social_network_create(request, contact_id):
 @login_required
 def social_network_edit(request, pk):
     social_network = get_object_or_404(SocialNetwork, pk=pk)
-    if social_network.owner.contact_list.owner != request.user and not request.user.is_superuser:
+    if not social_network.owner.contact_list.is_editable(request.user, social_network.owner.contact_list):
         raise PermissionDenied
+
     if request.method == 'POST':
         form = SocialNetworkForm(instance=social_network, data=request.POST)
         if form.is_valid():
@@ -176,6 +225,8 @@ def social_network_edit(request, pk):
 
 @login_required
 def company_create(request, contact_list_id):
+    contact_list = get_object_or_404(ContactList, id=contact_list_id)
+
     if request.method == 'POST':
         form = CompanyForm(data=request.POST)
         if form.is_valid():
