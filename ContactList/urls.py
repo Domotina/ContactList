@@ -28,6 +28,10 @@ urlpatterns = patterns('ContactList.views',
     # Used for company ??? contact_list_id??
     url(r'^contactlist/(?P<contact_list_id>[-\w]+)/company/create$', 'company_create', name='app_company'),
 
+    # Used for collaborators
+    url(r'^contactlist/(?P<contact_list_id>[-\w]+)/collaborators/$', 'collaborators', name='app_collaborators'),
+    url(r'^contactList/(?P<contact_list_id>[-\w]+)/collaborators/create$', 'collaborator_create', name='app_collaborator_create'),
+    url(r'^collaborators/delete/(?P<collaborator_id>\d+)/$', 'collaborator_delete', name='app_collaborator_delete'),
 
     url(r'^search/$', 'search', name='app_search'),
 )
