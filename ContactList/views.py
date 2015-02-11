@@ -30,7 +30,7 @@ def contact_list_user(request, username):
     if request.user == user:
         contact_lists = user.contact_lists.all()
     else:
-        contact_lists = ContactList.objects.filter(Q(owner__username = username)).filter(Q(is_public=True)|Q(collaborators__username__username = request.user))
+        contact_lists = ContactList.objects.filter(Q(owner__username = username)).filter(Q(is_public=True)|Q(collaborators__username = request.user)).distinct()
     context = {'contact_lists': contact_lists, 'owner': user}
     return render(request, 'contact_list_user.html', context)
 
