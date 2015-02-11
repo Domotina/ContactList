@@ -33,13 +33,13 @@ class ContactList(models.Model):
         verbose_name_plural = 'contact lists'
         ordering = ['name']
 
-    def is_editable(self, user=None, contact_list=None):
+    def is_editable(self, user=None):
         # Puede editar la agenda  si es el superusuario o el propietario de la agenda
-        if user.is_superuser or contact_list.owner == user:
+        if user.is_superuser or self.owner == user:
             return True
 
         # O Si hace parte de los colaboradores de la agenda
-        collaborators = Collaborator.objects.filter(contact_list = contact_list)
+        collaborators = Collaborator.objects.filter(contact_list = self)
         for collaborator in collaborators:
             if collaborator.username == user:
                 return True
